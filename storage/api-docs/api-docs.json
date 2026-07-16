@@ -1,0 +1,10 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Management Api Documentation",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/v1": {}
+    }
+}
