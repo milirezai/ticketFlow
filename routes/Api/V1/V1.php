@@ -15,8 +15,9 @@ Route::get('/',[V1Controller::class,'index']);
 
 // auth
 
-Route::middleware('throttle:limiter')->prefix('auth')->group(function (){
+Route::middleware('throttle')->prefix('auth')->group(function (){
     Route::post('/',[RegisterController::class,'index'])->name('register');
     Route::post('/login',[LoginController::class,'index'])->name('login');
-    Route::post('/logout',[LogoutController::class,'index'])->name('logout');
+    Route::post('/logout',[LogoutController::class,'index'])
+        ->middleware('auth:sanctum')->name('logout');
 });
