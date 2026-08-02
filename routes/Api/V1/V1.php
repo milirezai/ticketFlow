@@ -15,5 +15,5 @@ Route::get('/',[V1Controller::class,'index']);
 // auth
 
 Route::prefix('auth')->group(function (){
-    Route::post('/',[RegisterController::class])
+    Route::post('/',[RegisterController::class]);
 });
