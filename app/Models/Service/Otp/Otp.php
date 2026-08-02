@@ -7,8 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Otp extends Model
 {
     protected $fillable = [
-        "authenticatable_type",
-        "authenticatable_id",
+        "user_id",
         "code",
         "is_used",
         "expired_at"
