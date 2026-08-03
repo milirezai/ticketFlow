@@ -2,7 +2,9 @@
 
 namespace App\Models\Service\Otp;
 
+use App\Models\User\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Otp extends Model
 {
@@ -18,4 +20,9 @@ class Otp extends Model
         "is_used" => "boolean",
         "expires_at" => "datetime"
     ];
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 }
