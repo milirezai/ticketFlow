@@ -4,9 +4,7 @@ namespace App\Services\Otp;
 
 use App\Models\Service\Otp\Otp;
 use App\Models\User\User;
-use App\Notifications\Service\Otp\SendOtpNotification;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 
 class OtpService
 {
@@ -23,19 +21,19 @@ class OtpService
 		return $this->ttlminutes;
 	}
 
-	public function generateAndSend(User $user): void
+	public function generate(User $user): int
 	{
 		$userUnusedOtp = $user->unusedOtp();
 		if($userUnusedOtp){
 			Otp::find($userUnusedOtp->id)->update(["is_used"=>true]);
 		}
-		$code = Str::random(5);
+		$code = random_int(100000, 999999);
 		Otp::create([
 			"user_id" => $user->id,
 			"code" => Hash::make($code),
 			"expired_at" => now()->addMinutes($this->ttlminutes)
 		]);
-		$user->notify(new SendOtpNotification($code));
+		return $code;
 	}
 
 	public function verify(User $user, string $code): bool
