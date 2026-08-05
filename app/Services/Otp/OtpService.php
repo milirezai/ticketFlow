@@ -24,8 +24,8 @@ class OtpService
 	public function generate(User $user): int
 	{
 		$userUnusedOtp = $user->unusedOtp();
-		if($userUnusedOtp){
-			Otp::find($userUnusedOtp->id)->update(["is_used"=>true]);
+		if ($userUnusedOtp) {
+			Otp::find($userUnusedOtp->id)->update(["is_used" => true]);
 		}
 		$code = random_int(100000, 999999);
 		Otp::create([
@@ -36,13 +36,17 @@ class OtpService
 		return $code;
 	}
 
-	public function verify(User $user, string $code): bool
+	public function verify(User $user, string $code): array
 	{
 		$otpRecord = Otp::find($user->unusedOtp()->id);
-		if (!$otpRecord || !Hash::check($code, $otpRecord->code)){
-			return false;
+		if (!$otpRecord) {
+			return ["success" => false, "message" => "No OTP found for this user."];
+		} else if (!Hash::check($code, $otpRecord->code)) {
+			return ["success" => false, "message" => "Invalid OTP code."];
+		} else if ($otpRecord->expired_at->isPast()) {
+			return ["success" => false, "message" => "OTP has expired."];
 		}
 		$otpRecord->update(["is_used" => true]);
-		return true;
+		return ["success" => true, "message" => "OTP verified successfully."];
 	}
 }
