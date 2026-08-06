@@ -3,8 +3,11 @@
 namespace App\Models\User;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use App\Models\Service\Otp\Otp;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -52,4 +55,13 @@ class User extends Authenticatable
         ];
     }
 
+    public function otps(): HasMany
+    {
+        return $this->hasMany(Otp::class);
+    }
+
+    public function unusedOtp()
+    {
+        return $this->otps()->where("is_used", false)->first();
+    }
 }
