@@ -15,10 +15,10 @@ class Otp extends Model
         "expired_at"
     ];
 
-    protected $cast = [
+    protected $casts = [
         "code" => "hashed",
         "is_used" => "boolean",
-        "expires_at" => "datetime"
+        "expired_at" => "datetime"
     ];
 
     public function user(): BelongsTo
