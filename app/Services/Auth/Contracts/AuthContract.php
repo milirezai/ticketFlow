@@ -12,5 +12,5 @@ interface AuthContract
     public function logout(User $user): void;
     public function changePassword(User $user, FormRequest $request): User;
     public function forgotPassword(FormRequest $request): void;
-    public function resetPassword(FormRequest $request): bool;
+    public function resetPassword(FormRequest $request): User|bool;
 }

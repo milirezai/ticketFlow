@@ -11,7 +11,7 @@ class LoginController extends Controller
 {
     public function index(LoginRequest $request, Auth $auth)
     {
-         $user = $auth->login($request->all());
+         $user = $auth->login($request);
          $token = $user->createToken('auth-login');
 
         return $user->toResource(UserResource::class)

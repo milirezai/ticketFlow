@@ -8,7 +8,8 @@ use Illuminate\Support\Facades\Hash;
 
 class OtpService
 {
-	protected int $ttlminutes = 5;
+
+    protected int $ttlminutes = 5;
 
 	public function setTtl(int $minutes): self
 	{
@@ -38,15 +39,18 @@ class OtpService
 
 	public function verify(User $user, string $code): array
 	{
-		$otpRecord = Otp::find($user->unusedOtp()->id);
-		if (!$otpRecord) {
-			return ["success" => false, "message" => "No OTP found for this user."];
-		} else if (!Hash::check($code, $otpRecord->code)) {
-			return ["success" => false, "message" => "Invalid OTP code."];
-		} else if ($otpRecord->expired_at->isPast()) {
-			return ["success" => false, "message" => "OTP has expired."];
-		}
-		$otpRecord->update(["is_used" => true]);
-		return ["success" => true, "message" => "OTP verified successfully."];
-	}
+        if ($user->unusedOtp()){
+            $otpRecord = Otp::find($user->unusedOtp()->id);
+            if (!$otpRecord) {
+                return ["success" => false, "message" => "No OTP found for this user."];
+            } else if (!Hash::check($code, $otpRecord->code)) {
+                return ["success" => false, "message" => "Invalid OTP code."];
+            } else if ($otpRecord->expired_at->isPast()) {
+                return ["success" => false, "message" => "OTP has expired."];
+            }
+            $otpRecord->update(["is_used" => true]);
+            return ["success" => true, "message" => "OTP verified successfully."];
+        }
+        return ["success" => false, "message" => "No OTP found for this user."];
+    }
 }

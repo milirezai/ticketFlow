@@ -3,14 +3,18 @@
 namespace App\Services\Auth;
 
 use App\Models\User\User;
+use App\Notifications\Service\Otp\SendOtpNotification;
 use App\Services\Auth\Contracts\AuthContract;
+use App\Services\Otp\OtpService;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 
 class Auth implements AuthContract
 {
+    public function __construct(
+        protected readonly OtpService $otp
+    ){}
 
     public function register(FormRequest $request): User
     {
@@ -60,27 +64,26 @@ class Auth implements AuthContract
     {
         $user = User::where('email', $request->email)->first();
         if ($user){
-            // send token
+            $code = $this->otp->setTtl(2)->generate($user);
+            $user->notify(new SendOtpNotification($code));
         }
         else
             throw new AuthenticationException();
     }
 
-    public function resetPassword(FormRequest $request): bool
+    public function resetPassword(FormRequest $request): User|bool
     {
         $user = User::where('email',$request->email)->first();
-        /*
-        $otp = $otp->verify($user, $request->otp);
-        if ($otp){
+        $otp = $this->otp->verify($user,$request->otp);
+        if ($otp['success']){
             $user->update([
                 'password' => Hash::make($request->password)
             ]);
-            return true;
+            return $user;
         }
         else{
             return false;
         }
-        */
     }
 }
 

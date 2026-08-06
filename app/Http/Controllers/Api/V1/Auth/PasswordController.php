@@ -27,6 +27,11 @@ class PasswordController extends Controller
     public function resetPassword(ResetPasswordRequest $request, Auth $auth)
     {
         $user = $auth->resetPassword($request);
+        if ($user){
+            $token = $user->createToken('reset-password');
+            return $user->toResource(UserResource::class)->additional(['token' => $token->plainTextToken]);
+        }
+        return response()->noContent(404);
     }
 
 }
