@@ -4,6 +4,7 @@ namespace App\Models\User;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use App\Models\Access\Concerns\HasRolesAndPermissions;
 use App\Models\Service\Otp\Otp;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -15,7 +16,7 @@ use Laravel\Sanctum\HasApiTokens;
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable,HasApiTokens;
+    use HasFactory, Notifiable, HasApiTokens, HasRolesAndPermissions;
 
     /**
      * The attributes that are mass assignable.
@@ -23,13 +24,20 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'first_name', 'last_name',
-        'email', 'email_verified_at',
-        'mobile', 'mobile_verified_at',
-        'password', 'user_type',
-        'profile_photo_path', 'activation',
-        'activation_date', 'status',
-        'status', 'remember_token'
+        'first_name',
+        'last_name',
+        'email',
+        'email_verified_at',
+        'mobile',
+        'mobile_verified_at',
+        'password',
+        'user_type',
+        'profile_photo_path',
+        'activation',
+        'activation_date',
+        'status',
+        'status',
+        'remember_token'
     ];
 
     /**
