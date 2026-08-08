@@ -9,6 +9,7 @@ use App\Models\Access\Permission;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Gate;
 
 class PermissionController extends Controller
@@ -31,6 +32,7 @@ class PermissionController extends Controller
     public function store(PermissionRequest $request): JsonResponse
     {
         $permission = Permission::create($request->validated());
+        Cache::forget('permissions');
         return PermissionResource::make($permission)->response()->setStatusCode(201);
     }
 
@@ -48,6 +50,7 @@ class PermissionController extends Controller
     public function update(PermissionRequest $request, Permission $permission): PermissionResource
     {
         $permission->update($request->validated());
+        Cache::forget('permissions');
         return PermissionResource::make($permission);
     }
 
@@ -57,6 +60,7 @@ class PermissionController extends Controller
     public function destroy(Permission $permission): Response
     {
         $permission->delete();
+        Cache::forget('permissions');
         return response()->noContent();
     }
 }
