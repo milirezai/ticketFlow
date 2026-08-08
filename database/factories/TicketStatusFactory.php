@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Model;
+use App\Models\Ticket\TicketStatus;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -10,7 +11,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class TicketStatusFactory extends Factory
 {
-
+    protected $model = TicketStatus::class;
     /**
      * Define the model's default state.
      *

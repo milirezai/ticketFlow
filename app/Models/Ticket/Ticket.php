@@ -14,7 +14,7 @@ class Ticket extends Model
 {
     use SoftDeletes,HasFactory;
     protected $fillable = ['subject', 'user_id','assigned_to','ticket_category_id',
-        'ticket_priority_id','ticket_status_id','created_at','updated_at'];
+        'ticket_priority_id','ticket_status_id', 'created_at','updated_at'];
     protected $casts = ['created_at' => 'datetime', 'updated_at' => 'datetime'];
     protected static function newFactory()
     {
@@ -22,7 +22,7 @@ class Ticket extends Model
     }
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class,'user_id');
     }
 
     public function assignedTo(): BelongsTo
@@ -32,17 +32,17 @@ class Ticket extends Model
 
     public function category(): BelongsTo
     {
-        return $this->belongsTo(TicketCategory::class);
+        return $this->belongsTo(TicketCategory::class,'ticket_category_id');
     }
 
     public function priority(): BelongsTo
     {
-        return $this->belongsTo(TicketPriority::class);
+        return $this->belongsTo(TicketPriority::class,'ticket_priority_id');
     }
 
     public function status(): BelongsTo
     {
-        return $this->belongsTo(TicketStatus::class);
+        return $this->belongsTo(TicketStatus::class,'ticket_status_id');
     }
 
     public function files(): HasMany

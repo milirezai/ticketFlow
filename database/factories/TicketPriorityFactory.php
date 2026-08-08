@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Model;
+use App\Models\Ticket\TicketPriority;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -10,6 +11,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class TicketPriorityFactory extends Factory
 {
+    protected $model = TicketPriority::class;
     /**
      * Define the model's default state.
      *
