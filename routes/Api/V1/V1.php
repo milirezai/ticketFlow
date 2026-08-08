@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\V1\Auth\RegisterController;
 use App\Http\Controllers\Api\V1\Auth\LoginController;
 use App\Http\Controllers\Api\V1\Auth\LogoutController;
 use App\Http\Controllers\Api\V1\Auth\PasswordController;
+use App\Http\Controllers\Api\V1\Ticket\TicketController;
 
 
 // swagger
@@ -32,3 +33,9 @@ Route::middleware('throttle')->prefix('auth')->group(function (){
     });
 
 });
+
+
+// ticket
+
+Route::resource('ticket',TicketController::class)
+    ->middleware(['auth:sanctum','throttle']);
