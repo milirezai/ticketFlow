@@ -13,7 +13,7 @@ class UserAccessController extends Controller
 {
     public function __construct(protected AccessService $access)
     {
-        Gate::authorize('assign-permissions');
+        Gate::authorize('assign.permissions');
     }
 
     public function assignRoles(User $user, UserAccessRequest $request): UserResource

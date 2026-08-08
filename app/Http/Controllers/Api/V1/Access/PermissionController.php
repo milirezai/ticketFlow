@@ -16,7 +16,7 @@ class PermissionController extends Controller
 {
     public function __construct()
     {
-        Gate::authorize('manage-permissions');
+        Gate::authorize('manage.permissions');
     }
     /**
      * Display a listing of the resource.

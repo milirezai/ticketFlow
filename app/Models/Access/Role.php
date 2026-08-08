@@ -3,6 +3,7 @@
 namespace App\Models\Access;
 
 use App\Models\User\User;
+use Database\Factories\RoleFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -21,6 +22,11 @@ class Role extends Model
     protected $casts = [
         'status' => 'boolean'
     ];
+
+    protected static function newFactory()
+    {
+        return RoleFactory::new();
+    }
 
     public function permissions(): BelongsToMany
     {

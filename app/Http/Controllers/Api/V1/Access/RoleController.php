@@ -16,7 +16,7 @@ class RoleController extends Controller
 {
     public function __construct(protected AccessService $access)
     {
-        Gate::authorize('manage-roles');
+        Gate::authorize('manage.roles');
     }
     /**
      * Display a listing of the resource.

@@ -10,6 +10,7 @@ use App\Models\Service\Otp\Otp;
 use App\Models\Ticket\Ticket;
 use App\Models\Ticket\TicketFile;
 use App\Models\Ticket\TicketMessage;
+use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -53,6 +54,11 @@ class User extends Authenticatable
         ];
     }
 
+    protected static function newFactory()
+    {
+        return UserFactory::new();
+    }
+    
     public function otps(): HasMany
     {
         return $this->hasMany(Otp::class);
