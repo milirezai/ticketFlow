@@ -5,6 +5,9 @@ namespace App\Models\User;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use App\Models\Service\Otp\Otp;
+use App\Models\Ticket\Ticket;
+use App\Models\Ticket\TicketFile;
+use App\Models\Ticket\TicketMessage;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -54,6 +57,10 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    protected static function newFactory()
+    {
+        return UserFactory::new();
+    }
 
     public function otps(): HasMany
     {
@@ -63,5 +70,20 @@ class User extends Authenticatable
     public function unusedOtp()
     {
         return $this->otps()->where("is_used", false)->first();
+    }
+
+    public function tickets(): HasMany
+    {
+        return $this->hasMany(Ticket::class);
+    }
+
+    public function files(): HasMany
+    {
+        return $this->hasMany(TicketFile::class);
+    }
+
+    public function messages(): HasMany
+    {
+        return $this->hasMany(TicketMessage::class);
     }
 }
