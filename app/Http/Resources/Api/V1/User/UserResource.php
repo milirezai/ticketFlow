@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Api\V1\User;
 
+use App\Http\Resources\Api\V1\Access\RoleResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -20,7 +21,7 @@ class UserResource extends JsonResource
             'mobile' =>  $this->mobile,
             'email' => $this->email,
             'profile_photo_path' =>  $this->profile_photo_path,
-            // 'roles' => RoleResource::collection($this->whenLoaded('roles')),
+            'roles' => RoleResource::collection($this->whenLoaded('roles'))
         ];
     }
 }

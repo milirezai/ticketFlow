@@ -3,11 +3,10 @@
 namespace Database\Factories;
 
 use App\Models\Access\Permission;
-use App\Models\Model;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<Model>
+ * @extends Factory<Permission>
  */
 class PermissionFactory extends Factory
 {
@@ -20,11 +19,9 @@ class PermissionFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->title(),
-            'description' => fake()->text(40),
-            'status' => fake()->boolean(),
-            'created_at' => fake()->time(),
-            'updated_at' => now()
+            'name' => fake()->unique()->word(),
+            'description' => fake()->sentence(),
+            'status' => rand(0, 1)
         ];
     }
 }
