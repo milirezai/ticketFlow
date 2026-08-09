@@ -32,45 +32,40 @@ class DevelopmentSeeder extends Seeder
             ->has(
 
                 TicketFile::factory()->count(3)
-                ->for($user->random()),'files'
+                    ->for($user->random()),
+                'files'
 
             )
             ->has(
 
                 TicketMessage::factory()->count(4)
-                    ->for($user->random()),'messages'
+                    ->for($user->random()),
+                'messages'
 
             )->create([
                 'user_id' => fn() => $user->random(),
                 'assigned_to' => fn() => $user->random(),
-                'ticket_category_id' => fn() =>$ticketCategory->random(),
+                'ticket_category_id' => fn() => $ticketCategory->random(),
                 'ticket_priority_id' => fn() => $ticketPriority->random(),
                 'ticket_status_id' => fn() => $ticketStatus->random()
             ]);
 
 
-        if (!Role::exists())
-        {
-            $roles = collect(['manager','support_specialist','user']);
-            $roles = Role::factory()->count($roles->count())
-                ->create([
-                    'name' => fn() => $roles->random(),
-                ]);
+        if (!Role::exists()) {
+            $rolesNames = collect(['manager', 'support-specialist', 'regular-user']);
+            $roles =  $rolesNames->map(fn($name) => Role::factory()->create(['name' => $name]));
         }
 
-            $entities = collect( ['ticket', 'setting', 'users','service','access','conversation']);
-            $operations = collect(['create','view','update','delete']);
-           $entities->when(
-                fn() => !Permission::exists()
-            )->map(function ($entity) use ($operations){
-                $operations->map(function ($operation)  use ($entity){
-                     Permission::factory()->create([
-                        'name' => $entity.'.'.$operation
-                    ]);
-                });
+        $entities = collect(['ticket', 'setting', 'users', 'service', 'access', 'conversation']);
+        $operations = collect(['create', 'view', 'update', 'delete']);
+        $entities->when(
+            fn() => !Permission::exists()
+        )->map(function ($entity) use ($operations) {
+            $operations->map(function ($operation)  use ($entity) {
+                Permission::factory()->create([
+                    'name' => $entity . '.' . $operation
+                ]);
             });
-
-
-
+        });
     }
 }
