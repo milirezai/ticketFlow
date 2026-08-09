@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('ticket_id')->constrained('tickets');
             $table->text('path');
             $table->string('type');
-            $table->tinyInteger('size')->nullable();
+            $table->bigInteger('size')->nullable();
             $table->boolean('status')->default(1);
             $table->timestamps();
             $table->softDeletes();

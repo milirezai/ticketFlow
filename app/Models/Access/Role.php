@@ -1,0 +1,40 @@
+<?php
+
+namespace App\Models\Access;
+
+use App\Models\User\User;
+use Database\Factories\RoleFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+class Role extends Model
+{
+    use SoftDeletes, HasFactory;
+
+    protected $fillable = [
+        'name',
+        'description',
+        'status'
+    ];
+
+    protected $casts = [
+        'status' => 'boolean'
+    ];
+
+    protected static function newFactory()
+    {
+        return RoleFactory::new();
+    }
+
+    public function permissions(): BelongsToMany
+    {
+        return $this->belongsToMany(Permission::class);
+    }
+
+    public function users(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class);
+    }
+}

@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\User;
+use App\Models\User\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -12,6 +12,7 @@ use Illuminate\Support\Str;
  */
 class UserFactory extends Factory
 {
+    protected $model = User::class;
     /**
      * The current password being used by the factory.
      */
@@ -25,10 +26,17 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
+            'first_name' => fake()->firstName(),
+            'last_name' => fake()->lastName(),
+            "mobile" => fake()->numberBetween(11111111111,99999999999),
+            'mobile_verified_at' => now(),
+            'profile_photo_path' => fake()->imageUrl(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
+            'user_type' => fake()->numberBetween(0,2),
+            'activation' => fake()->boolean(),
+            'status' => fake()->boolean(),
+            'password' => Hash::make(fake()->numberBetween(111111111,99999999)),
             'remember_token' => Str::random(10),
         ];
     }
