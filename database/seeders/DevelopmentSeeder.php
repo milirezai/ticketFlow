@@ -57,7 +57,7 @@ class DevelopmentSeeder extends Seeder
         }
 
         $entities = collect(['ticket', 'setting', 'users', 'service', 'access', 'conversation']);
-        $operations = collect(['create', 'view', 'update', 'delete']);
+        $operations = collect(['create', 'view', 'viewAny', 'update', 'delete']);
         $entities->when(
             fn() => !Permission::exists()
         )->map(function ($entity) use ($operations) {
