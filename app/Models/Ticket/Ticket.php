@@ -37,7 +37,7 @@ class Ticket extends Model
 
     public function priority(): BelongsTo
     {
-        return $this->belongsTo(TicketPriority::class,'ticket_priority_id');
+            return $this->belongsTo(TicketPriority::class,'ticket_priority_id');
     }
 
     public function status(): BelongsTo

@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\V1\Auth\RegisterController;
 use App\Http\Controllers\Api\V1\Auth\LoginController;
 use App\Http\Controllers\Api\V1\Auth\LogoutController;
 use App\Http\Controllers\Api\V1\Auth\PasswordController;
+use App\Http\Controllers\Api\V1\Ticket\TicketController;
 
 
 // swagger
@@ -41,3 +42,9 @@ Route::middleware('auth:sanctum')->prefix('access')->name('access.')->group(func
     Route::post('users/{user}/roles/sync', [UserAccessController::class, 'assignRoles'])->name('assignRoles');
     Route::post('users/{user}/permissions/sync', [UserAccessController::class, 'assignPermissions'])->name('assignPermissions');
 });
+
+
+// ticket
+
+Route::resource('tickets',TicketController::class)
+    ->middleware(['auth:sanctum','throttle']);
