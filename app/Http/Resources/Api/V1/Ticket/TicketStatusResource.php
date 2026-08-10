@@ -14,6 +14,12 @@ class TicketStatusResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'name' => $this->name,
+            'description' => $this->description,
+            'status' => $this->status,
+            'created_at' => $this->created_at->isoFormat('dddd D MMMM Y'),
+            'updated_at' => $this->updated_at->isoFormat('dddd D MMMM Y')
+        ];
     }
 }

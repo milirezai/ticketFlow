@@ -20,7 +20,7 @@ class RoleResource extends JsonResource
             'description' => $this->description,
             'status' => $this->status,
             'permissions' => PermissionResource::collection($this->whenLoaded('permissions')),
-            'created_at' => $this->created_at
+            'created_at' => $this->created_at->isoFormat('dddd D MMMM Y')
         ];
     }
 }

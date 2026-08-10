@@ -46,5 +46,5 @@ Route::middleware('auth:sanctum')->prefix('access')->name('access.')->group(func
 
 // ticket
 
-Route::resource('ticket',TicketController::class)
+Route::resource('tickets',TicketController::class)
     ->middleware(['auth:sanctum','throttle']);

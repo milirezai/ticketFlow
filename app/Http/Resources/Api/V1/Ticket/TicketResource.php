@@ -22,8 +22,8 @@ class TicketResource extends JsonResource
             'category' => TicketCategoryResource::make($this->whenLoaded('category')),
             'priority' => TicketPriorityResource::make($this->whenLoaded('priority')),
             'status' => TicketStatusResource::make($this->whenLoaded('status')),
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at
+            'created_at' => $this->created_at->isoFormat('dddd D MMMM Y h:m:s'),
+            'updated_at' => $this->updated_at->isoFormat('dddd D MMMM Y h:m:s')
         ];
     }
 }
