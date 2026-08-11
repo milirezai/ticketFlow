@@ -14,6 +14,7 @@ use App\Models\User\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Access\Role;
+use Illuminate\Support\Str;
 
 class DevelopmentSeeder extends Seeder
 {
@@ -23,9 +24,30 @@ class DevelopmentSeeder extends Seeder
     public function run(): void
     {
         $user = User::factory()->count(10)->create();
-        $ticketCategory = TicketCategory::factory()->count(10)->create();
-        $ticketPriority = TicketPriority::factory()->count(10)->create();
-        $ticketStatus = TicketStatus::factory()->count(10)->create();
+        foreach (['Technical', 'Payment', 'Support', 'General'] as $name) {
+            TicketCategory::firstOrCreate([
+                'name' => $name,
+                'slug' => Str::slug($name),
+                'description' => null,
+                'status' => 1
+            ]);
+        }
+        foreach (['low', 'medium', 'high', 'critical'] as $name) {
+            TicketPriority::firstOrCreate([
+                'name' => $name,
+                'slug' => Str::slug($name),
+                'description' => null,
+                'status' => 1
+            ]);
+        }
+        foreach (['open', 'pending', 'answered', 'closed'] as $name) {
+            TicketStatus::firstOrCreate([
+                'name' => $name,
+                'slug' => Str::slug($name),
+                'description' => null,
+                'status' => 1
+            ]);
+        }
         Setting::factory()->count(10)->create();
 
         Ticket::factory()->count(20)
@@ -45,9 +67,9 @@ class DevelopmentSeeder extends Seeder
             )->create([
                 'user_id' => fn() => $user->random(),
                 'assigned_to' => fn() => $user->random(),
-                'ticket_category_id' => fn() => $ticketCategory->random(),
-                'ticket_priority_id' => fn() => $ticketPriority->random(),
-                'ticket_status_id' => fn() => $ticketStatus->random()
+                'ticket_category_id' => fn() => TicketCategory::inRandomOrder()->first()->id,
+                'ticket_priority_id' => fn() => TicketPriority::inRandomOrder()->first()->id,
+                'ticket_status_id' => fn() => TicketStatus::inRandomOrder()->first()->id
             ]);
 
 
@@ -56,7 +78,7 @@ class DevelopmentSeeder extends Seeder
             $roles =  $rolesNames->map(fn($name) => Role::factory()->create(['name' => $name]));
         }
 
-        $entities = collect(['ticket', 'setting', 'users', 'service', 'access', 'conversation']);
+        $entities = collect(['ticket', 'setting', 'users', 'service', 'access', 'conversation', 'ticket.category', 'ticket.priority', 'ticket.status']);
         $operations = collect(['create', 'view', 'viewAny', 'update', 'delete']);
         $entities->when(
             fn() => !Permission::exists()
