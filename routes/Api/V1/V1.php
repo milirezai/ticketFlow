@@ -9,8 +9,11 @@ use App\Http\Controllers\Api\V1\Auth\RegisterController;
 use App\Http\Controllers\Api\V1\Auth\LoginController;
 use App\Http\Controllers\Api\V1\Auth\LogoutController;
 use App\Http\Controllers\Api\V1\Auth\PasswordController;
+use App\Http\Controllers\Api\V1\Ticket\TicketCategoryController;
 use App\Http\Controllers\Api\V1\Ticket\TicketController;
 use App\Http\Controllers\Api\V1\Ticket\TicketMessageController;
+use App\Http\Controllers\Api\V1\Ticket\TicketPriorityController;
+use App\Http\Controllers\Api\V1\Ticket\TicketStatusController;
 
 // swagger
 
@@ -46,6 +49,9 @@ Route::middleware('auth:sanctum')->prefix('access')->name('access.')->group(func
 
 // ticket
 Route::middleware(['auth:sanctum', 'throttle'])->group(function () {
-    Route::resource('tickets', TicketController::class);
-    Route::resource('tickets.messages', TicketMessageController::class)->scoped();
+    Route::apiResource('tickets', TicketController::class);
+    Route::apiResource('tickets.messages', TicketMessageController::class)->scoped();
+    Route::apiResource('ticket-categories', TicketCategoryController::class);
+    Route::apiResource('ticket-priorities', TicketPriorityController::class);
+    Route::apiResource('ticket-statuses', TicketStatusController::class);
 });
