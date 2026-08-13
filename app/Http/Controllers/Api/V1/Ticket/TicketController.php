@@ -35,7 +35,7 @@ class TicketController extends Controller
     public function store(TicketRequest $request)
     {
         $inputs = $request->all();
-        $inputs['user_id'] = 1;
+        $inputs['user_id'] = $request->user()->id;
         $ticket = Ticket::create($inputs);
 
         $messageInputs = [
