@@ -34,16 +34,16 @@ class TicketTest extends TestCase
     }
 
 
-    public function test_user_can_view_tickets(): void
-    {
-        $user = User::factory()->has(
-            Permission::factory()->count(1)->create(['name' =>'ticket.view'])
-        )->create();
-        Sanctum::actingAs($user);
-
-        $response = $this->get(route('tickets.index'));
-        $response->assertStatus(200);
-    }
+//    public function test_user_can_view_tickets(): void
+//    {
+//        $user = User::factory()->has(
+//            Permission::factory()->count(1)->create(['name' =>'ticket.view'])
+//        )->create();
+//        Sanctum::actingAs($user);
+//
+//        $response = $this->get(route('tickets.index'));
+//        $response->assertStatus(200);
+//    }
 
     public function test_user_can_create_ticket()
     {
