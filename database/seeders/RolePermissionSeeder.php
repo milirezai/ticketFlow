@@ -16,7 +16,7 @@ class RolePermissionSeeder extends Seeder
      */
     public function run(): void
     {
-        $roles = ['super-admin', 'manager', 'support-specialist', 'regular-user'];
+        $roles = ['super-admin', 'manager', 'support-specialist', 'regular-user', 'expert'];
         foreach ($roles as $roleName) {
             Role::firstOrCreate(['name' => $roleName], [
                 'description' => ucfirst(str_replace('-', ' ', $roleName)),
@@ -24,7 +24,7 @@ class RolePermissionSeeder extends Seeder
             ]);
         }
 
-        $permissions = ['manage.roles', 'manage.permissions', 'assign.permissions'];
+        $permissions = ['manage.roles', 'manage.permissions', 'assign.permissions', 'expert.manage'];
         foreach ($permissions as $permissionName) {
             Permission::firstOrCreate(['name' => $permissionName], [
                 'description' => ucfirst(str_replace('.', ' ', $permissionName)),
