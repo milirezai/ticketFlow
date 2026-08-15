@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Ticket;
 
+use App\Filters\TicketFilter;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Routing\Controller;
 use App\Http\Requests\Api\V1\Ticket\TicketRequest;
@@ -22,9 +23,11 @@ class TicketController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request, TicketFilter $filter)
     {
         $tickets = Ticket::query();
+
+        $filter->search($tickets,$request->only(['title', 'status', 'priority', 'owner', 'category', 'dateFrom','dateTo','assignedTo']));
 
         return TicketResource::collection($tickets->get());
     }
