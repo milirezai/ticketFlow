@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\V1\Auth\RegisterController;
 use App\Http\Controllers\Api\V1\Auth\LoginController;
 use App\Http\Controllers\Api\V1\Auth\LogoutController;
 use App\Http\Controllers\Api\V1\Auth\PasswordController;
+use App\Http\Controllers\Api\V1\Ticket\ExpertController;
 use App\Http\Controllers\Api\V1\Ticket\TicketCategoryController;
 use App\Http\Controllers\Api\V1\Ticket\TicketController;
 use App\Http\Controllers\Api\V1\Ticket\TicketMessageController;
@@ -54,4 +55,11 @@ Route::middleware(['auth:sanctum', 'throttle'])->group(function () {
     Route::apiResource('ticket-categories', TicketCategoryController::class);
     Route::apiResource('ticket-priorities', TicketPriorityController::class);
     Route::apiResource('ticket-statuses', TicketStatusController::class);
+    Route::prefix('experts')->controller(ExpertController::class)->name('experts.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/{expert}/tickets', 'tickets')->name('tickets');
+        Route::get('/{expert}/categories', 'categories')->name('categories');
+        Route::post('/{expert}/categories', 'syncCategories')->name('syncCategories');
+        Route::post('/{expert}/assign', 'assign')->name('assign');
+    });
 });
