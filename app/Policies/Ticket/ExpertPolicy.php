@@ -2,9 +2,7 @@
 
 namespace App\Policies\Ticket;
 
-use App\Models\Ticket\Ticket;
 use App\Models\User\User;
-use Illuminate\Auth\Access\Response;
 use Illuminate\Support\Facades\Gate;
 
 class ExpertPolicy
@@ -14,7 +12,7 @@ class ExpertPolicy
      */
     public function viewAny(User $user): bool
     {
-        return Gate::allows('expert.manage');
+        return Gate::allows('expert.manage') || $user->hasRole('support-specialist');
     }
 
     /**
@@ -22,12 +20,12 @@ class ExpertPolicy
      */
     public function viewTickets(User $user, User $expert): bool
     {
-        return Gate::allows('expert.manage') || ($user->hasRole('expert') && $user->id === $expert->id);
+        return Gate::allows('expert.manage') || ($user->hasRole('expert') && $user->id === $expert->id) || $user->hasRole('support-specialist');
     }
 
     public function viewCategories(User $user, User $expert): bool
     {
-        return Gate::allows('expert.manage') || ($user->hasRole('expert') && $user->id === $expert->id);
+        return Gate::allows('expert.manage') || ($user->hasRole('expert') && $user->id === $expert->id)  || $user->hasRole('support-specialist');
     }
 
     public function syncCategories(User $user, User $expert): bool

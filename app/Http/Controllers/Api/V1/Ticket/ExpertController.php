@@ -10,7 +10,6 @@ use App\Http\Resources\Api\V1\Ticket\TicketCategoryResource;
 use App\Http\Resources\Api\V1\Ticket\TicketResource;
 use App\Models\Ticket\Ticket;
 use App\Models\User\User;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class ExpertController extends Controller

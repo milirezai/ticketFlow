@@ -18,7 +18,7 @@ class ExpertResource extends JsonResource
             'id' => $this->id,
             'first_name' =>  $this->first_name,
             'last_name' =>  $this->last_name,
-            'categories' => new TicketCategoryResource($this->whenLoaded('expertCategories'))
+            'categories' =>  TicketCategoryResource::collection($this->whenLoaded('expertCategories'))
         ];
     }
 }
