@@ -8,6 +8,7 @@ use App\Models\Access\Permission;
 use App\Models\Access\Role;
 use App\Models\Service\Otp\Otp;
 use App\Models\Ticket\Ticket;
+use App\Models\Ticket\TicketCategory;
 use App\Models\Ticket\TicketFile;
 use App\Models\Ticket\TicketMessage;
 use Database\Factories\UserFactory;
@@ -58,7 +59,7 @@ class User extends Authenticatable
     {
         return UserFactory::new();
     }
-    
+
     public function otps(): HasMany
     {
         return $this->hasMany(Otp::class);
@@ -115,5 +116,20 @@ class User extends Authenticatable
     public function hasPermissionTo(string $permission): bool
     {
         return $this->hasPermissionThroughRole($permission) || $this->permissions->contains('name', $permission);
+    }
+
+    public function expertCategories(): BelongsToMany
+    {
+        return $this->belongsToMany(TicketCategory::class, 'expert_categories');
+    }
+
+    public function assignedTickets(): HasMany
+    {
+        return $this->hasMany(Ticket::class, 'assigned_to');
+    }
+
+    public function isExpert(): bool
+    {
+        return $this->hasRole('expert');
     }
 }
