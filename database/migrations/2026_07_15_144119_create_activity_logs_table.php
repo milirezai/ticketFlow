@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\Models\User\User;
 
 return new class extends Migration
 {
@@ -13,10 +14,11 @@ return new class extends Migration
     {
         Schema::create('activity_logs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users');
-            $table->foreignId('ticket_id')->constrained('tickets');
+            $table->foreignIdFor(User::class)->nullable()->constrained()->nullOnDelete();
+            $table->morphs('subject');
             $table->string('action');
-            $table->text('description');
+            $table->text('description')->nullable();
+            $table->json('properties')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
