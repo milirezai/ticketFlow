@@ -2,6 +2,7 @@
 
 namespace App\Models\Ticket;
 
+use App\Models\Activity\ActivityLog;
 use App\Models\User\User;
 use Database\Factories\TicketFactory;
 use Illuminate\Database\Eloquent\Attributes\Scope;
@@ -10,6 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Ticket extends Model
@@ -106,4 +108,8 @@ class Ticket extends Model
         return $query->where('assigned_to','=',$assignedTo);
     }
 
+    public function activities(): MorphMany
+    {
+        return $this->morphMany(ActivityLog::class,'subject');
+    }
 }

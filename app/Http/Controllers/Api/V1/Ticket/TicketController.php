@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers\Api\V1\Ticket;
 
+use App\Events\Activity\TicketCreate;
+use App\Events\Activity\TicketMessageAdded;
 use App\Filters\TicketFilter;
+use App\Http\Resources\Api\V1\Activity\ActivityLogResource;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Routing\Controller;
 use App\Http\Requests\Api\V1\Ticket\TicketRequest;
@@ -18,7 +21,7 @@ class TicketController extends Controller
     use AuthorizesRequests;
     public function __construct()
     {
-        $this->authorizeResource(Ticket::class);
+//        $this->authorizeResource(Ticket::class);
     }
 
     /**
@@ -42,6 +45,8 @@ class TicketController extends Controller
         $inputs['user_id'] = $request->user()->id;
         $ticket = Ticket::create($inputs);
 
+
+
         $messageInputs = [
             'content' => $request->input('content'),
             'user_id' => $request->user()->id,
@@ -49,6 +54,7 @@ class TicketController extends Controller
             'status' => true
         ];
         TicketMessage::create($messageInputs);
+//        event(new TicketMessageAdded());
 
         foreach ($request->file('files', []) as $file) {
             $name =  Str::of($file->getClientOriginalName())->slug() . '_' . time() . '_' . Str::random(4) . '.' . $file->getClientOriginalExtension();
@@ -90,5 +96,10 @@ class TicketController extends Controller
     {
         $ticket->delete();
         return response()->noContent();
+    }
+    public function activities(Ticket $ticket)
+    {
+//        $this->authorize('ticket.view');
+        return ActivityLogResource::collection($ticket->activities);
     }
 }
