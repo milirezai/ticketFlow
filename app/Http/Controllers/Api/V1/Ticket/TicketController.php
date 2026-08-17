@@ -11,6 +11,7 @@ use App\Models\Ticket\Ticket;
 use App\Models\Ticket\TicketFile;
 use App\Models\Ticket\TicketMessage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class TicketController extends Controller
 {
@@ -27,7 +28,7 @@ class TicketController extends Controller
     {
         $tickets = Ticket::query();
 
-        $filter->search($tickets,$request->only(['title', 'status', 'priority', 'owner', 'category', 'dateFrom','dateTo','assignedTo']));
+        $filter->search($tickets, $request->only(['title', 'status', 'priority', 'owner', 'category', 'dateFrom', 'dateTo', 'assignedTo']));
 
         return TicketResource::collection($tickets->get());
     }
@@ -37,35 +38,30 @@ class TicketController extends Controller
      */
     public function store(TicketRequest $request)
     {
-        $inputs = $request->all();
-        $inputs['user_id'] = 1;
+        $inputs = $request->validated();
+        $inputs['user_id'] = $request->user()->id;
         $ticket = Ticket::create($inputs);
 
         $messageInputs = [
             'content' => $request->input('content'),
-            'user_id' => 1,
+            'user_id' => $request->user()->id,
             'ticket_id' => $ticket->id,
             'status' => true
         ];
         TicketMessage::create($messageInputs);
 
-        $request->whenHas('file',function ($input) use ($ticket){
-            $file = $input;
-            $fileSize = $file->getSize();
-            $name = time().'.'.$file->getClientOriginalExtension();
-            $file->move(public_path('file/ticket'),$name);
-            $filePath = 'file/ticket/'.$name;
-            $fileInputs = [
-                'user_id' => 1,
+        foreach ($request->file('files', []) as $file) {
+            $name =  Str::of($file->getClientOriginalName())->slug() . '_' . time() . '_' . Str::random(4) . '.' . $file->getClientOriginalExtension();
+            $path = $file->storeAs('tickets/' . $ticket->id, $name, 'local');
+            TicketFile::create([
+                'user_id' => $request->user()->id,
                 'ticket_id' => $ticket->id,
-                'path' => $filePath,
+                'path' => $path,
                 'type' => $file->getClientOriginalExtension(),
-                'size' => $fileSize,
-                'status' => true
-            ];
-            TicketFile::create($fileInputs);
-        });
-
+                'size' => $file->getSize(),
+                'status' => true,
+            ]);
+        }
         return TicketResource::make($ticket);
     }
 

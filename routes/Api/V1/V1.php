@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\V1\Auth\PasswordController;
 use App\Http\Controllers\Api\V1\Ticket\ExpertController;
 use App\Http\Controllers\Api\V1\Ticket\TicketCategoryController;
 use App\Http\Controllers\Api\V1\Ticket\TicketController;
+use App\Http\Controllers\Api\V1\Ticket\TicketFileController;
 use App\Http\Controllers\Api\V1\Ticket\TicketMessageController;
 use App\Http\Controllers\Api\V1\Ticket\TicketPriorityController;
 use App\Http\Controllers\Api\V1\Ticket\TicketStatusController;
@@ -62,4 +63,6 @@ Route::middleware(['auth:sanctum', 'throttle'])->group(function () {
         Route::post('/{expert}/categories', 'syncCategories')->name('syncCategories');
         Route::post('/{expert}/assign', 'assign')->name('assign');
     });
+    Route::apiResource('tickets.files', TicketFileController::class)->scoped()->only(['index', 'show', 'store', 'destroy']);
+    Route::get('tickets/{ticket}/files/{file}/download', [TicketFileController::class, 'download'])->name('tickets.files.download')->scopeBindings();
 });
