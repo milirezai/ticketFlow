@@ -10,13 +10,12 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Gate;
 
 class PermissionController extends Controller
 {
     public function __construct()
     {
-        Gate::authorize('manage.permissions');
+        $this->middleware('can:manage.permissions');
     }
     /**
      * Display a listing of the resource.
