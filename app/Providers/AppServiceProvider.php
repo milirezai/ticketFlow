@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Access\Permission;
 use App\Models\User\User;
+use App\Policies\Ticket\ExpertPolicy;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
@@ -33,5 +34,6 @@ class AppServiceProvider extends ServiceProvider
                 Gate::define($permission, fn(User $user) => $user->hasPermissionTo($permission));
             }
         }
+        Gate::policy(User::class, ExpertPolicy::class);
     }
 }

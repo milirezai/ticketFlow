@@ -74,7 +74,7 @@ class DevelopmentSeeder extends Seeder
 
 
         if (!Role::exists()) {
-            $rolesNames = collect(['manager', 'support-specialist', 'regular-user']);
+            $rolesNames = collect(['manager', 'support-specialist', 'regular-user', 'expert']);
             $roles =  $rolesNames->map(fn($name) => Role::factory()->create(['name' => $name]));
         }
 

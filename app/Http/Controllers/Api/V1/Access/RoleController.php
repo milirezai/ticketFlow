@@ -10,13 +10,12 @@ use App\Services\Access\AccessService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Gate;
 
 class RoleController extends Controller
 {
     public function __construct(protected AccessService $access)
     {
-        Gate::authorize('manage.roles');
+        $this->middleware('can:manage.roles');
     }
     /**
      * Display a listing of the resource.
