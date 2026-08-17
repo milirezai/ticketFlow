@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Ticket;
 
+use App\Events\Activity\TicketMessageAdded;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Ticket\TicketMessageRequest;
 use App\Http\Resources\Api\V1\Ticket\TicketMessageResource;
@@ -33,6 +34,17 @@ class TicketMessageController extends Controller
             'user_id' => $request->user()->id,
             'ticket_id' => $ticket->id
         ]);
+
+        event(new TicketMessageAdded([
+            'action' => 'ticket.message_add',
+            'user' => $request->user()->id,
+            'subject' => $ticket,
+            'description' => $request->user()->first_name.' create a message for ticket #'.$ticket->id,
+            'properties' => [
+                'message_id' => $message->id
+            ]
+        ]));
+
         return TicketMessageResource::make($message)->response()->setStatusCode(201);
     }
 

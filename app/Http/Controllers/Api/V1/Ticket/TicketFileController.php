@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Ticket;
 
+use App\Events\Activity\TicketAttachment;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Ticket\TicketFileRequest;
 use App\Http\Resources\Api\V1\Ticket\TicketFileResource;
@@ -42,6 +43,15 @@ class TicketFileController extends Controller
                 'status' => true,
             ]);
         }
+
+            event(new TicketAttachment([
+                'action' => 'ticket.file_attach',
+                'user' => $request->user()->id,
+                'subject' => $ticket,
+                'description' => $request->user()->first_name.' attach a file for ticket #'.$ticket->id,
+                'properties' => []
+            ]));
+
         return TicketFileResource::collection($files)->response()->setStatusCode(201);
     }
 

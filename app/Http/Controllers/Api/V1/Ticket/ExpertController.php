@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Ticket;
 
+use App\Events\Activity\TicketAssigned;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Ticket\AssignTicketRequest;
 use App\Http\Requests\Api\V1\Ticket\ExpertCategoryRequest;
@@ -16,7 +17,7 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 class ExpertController extends Controller
 {
     use AuthorizesRequests;
-    
+
     public function index(): AnonymousResourceCollection
     {
         $this->authorize('viewAny', User::class);
@@ -48,7 +49,22 @@ class ExpertController extends Controller
     {
         $this->authorize('assign', $expert);
         $ticket = Ticket::findOrFail($request->validated('ticket_id'));
+
+        event(new TicketAssigned([
+            'action' => 'ticket.assigned',
+            'user' => $request->user()->id,
+            'subject' => $ticket,
+            'description' => ' change expert for ticket #'.$ticket->id. ' from '. $ticket->assignedTo->id. ' to '. $expert->id,
+            'properties' => [
+                'old' => $ticket->assignedTo->id,
+                'new' => $expert->id,
+            ]
+        ]));
+
         $ticket->update(['assigned_to' => $expert->id]);
+
+
+
         return TicketResource::make($ticket->fresh()->load(['user', 'assignedTo', 'category', 'status', 'priority']));
     }
 }

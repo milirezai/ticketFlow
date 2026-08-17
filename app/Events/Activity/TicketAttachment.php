@@ -10,7 +10,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class TicketPriorityChanged
+class TicketAttachment
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 

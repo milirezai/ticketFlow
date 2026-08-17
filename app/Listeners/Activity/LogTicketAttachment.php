@@ -2,12 +2,12 @@
 
 namespace App\Listeners\Activity;
 
-use App\Events\Activity\TicketCreate;
+use App\Events\Activity\TicketAttachment;
 use App\Services\Activity\Activity;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
-class LogTicketCreate
+class LogTicketAttachment
 {
     /**
      * Create the event listener.
@@ -20,7 +20,7 @@ class LogTicketCreate
     /**
      * Handle the event.
      */
-    public function handle(TicketCreate $event): void
+    public function handle(TicketAttachment $event): void
     {
         $this->activity->log(
             action: $event->data['action'], user: $event->data['user'],
