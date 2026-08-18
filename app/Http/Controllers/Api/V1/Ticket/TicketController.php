@@ -19,6 +19,7 @@ use App\Http\Resources\Api\V1\Ticket\TicketResource;
 use App\Models\Ticket\Ticket;
 use App\Models\Ticket\TicketFile;
 use App\Models\Ticket\TicketMessage;
+use App\Models\Ticket\TicketStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -120,7 +121,7 @@ class TicketController extends Controller
     {
 
         $request->whenFilled('ticket_status_id',function ($ticket_status_id) use ($ticket, $request){
-            $new_status = TicketCategory::where('id',$request->input('ticket_status_id'))->get()->first()->name;
+            $new_status = TicketStatus::where('id',$request->input('ticket_status_id'))->get()->first()->name;
             event(new TicketStatusChanged([
                 'action' => 'ticket.status_change',
                 'user' => $request->user()->id,
