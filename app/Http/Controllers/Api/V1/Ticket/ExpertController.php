@@ -54,9 +54,9 @@ class ExpertController extends Controller
             'action' => 'ticket.assigned',
             'user' => $request->user()->id,
             'subject' => $ticket,
-            'description' => ' change expert for ticket #'.$ticket->id. ' from '. $ticket->assignedTo->id. ' to '. $expert->id,
+            'description' => ' change expert for ticket #'.$ticket->id. ' from '. $ticket->assignedTo?->id. ' to '. $expert->id,
             'properties' => [
-                'old' => $ticket->assignedTo->id,
+                'old' => $ticket->assignedTo?->id,
                 'new' => $expert->id,
             ]
         ]));
