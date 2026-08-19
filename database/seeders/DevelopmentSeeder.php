@@ -50,7 +50,7 @@ class DevelopmentSeeder extends Seeder
         }
         Setting::factory()->count(10)->create();
 
-        Ticket::factory()->count(20)
+        Ticket::factory()->count(5)
             ->has(
 
                 TicketFile::factory()->count(3)

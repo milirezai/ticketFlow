@@ -23,7 +23,7 @@ class LogTicketAssigned
     public function handle(TicketAssigned $event): void
     {
         $this->activity->log(
-            action: $event->data['action'], user: $event->data['user'],
+            action: $event->data['action'], user: $event->data['user'] ?? null,
             subject: $event->data['subject'], description: $event->data['description'],
             properties: $event->data['properties']
         );
