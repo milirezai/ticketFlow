@@ -75,6 +75,11 @@ class User extends Authenticatable
         return $this->hasMany(Ticket::class);
     }
 
+    public function ticketsShouldReview(): HasMany
+    {
+        return $this->hasMany(Ticket::class,'assigned_to');
+    }
+
     public function files(): HasMany
     {
         return $this->hasMany(TicketFile::class);
