@@ -50,7 +50,7 @@ Route::middleware('auth:sanctum')->prefix('access')->name('access.')->group(func
 
 
 // ticket
-Route::middleware(['auth:sanctum', 'throttle'])->group(function () {
+Route::middleware(['throttle'])->group(function () {
     Route::apiResource('tickets', TicketController::class);
     Route::get('tickets/{ticket}/activities',[TicketController::class,'activities']);
     Route::apiResource('tickets.messages', TicketMessageController::class)->scoped();

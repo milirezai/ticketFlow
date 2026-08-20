@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c25e371a8b0b12a2ad442c2ac04f5927",
+    "content-hash": "e1a956a1df21aa1d79a02db08a6c867d",
     "packages": [
         {
             "name": "brick/math",
@@ -2245,6 +2245,48 @@
                 }
             ],
             "time": "2026-03-08T20:05:35+00:00"
+        },
+        {
+            "name": "milirezai/milirulepilot",
+            "version": "v1.2.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/milirezai/milirulepilot.git",
+                "reference": "5b27e1ea06c97d02295408e12c29ae89a4f29102"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/milirezai/milirulepilot/zipball/5b27e1ea06c97d02295408e12c29ae89a4f29102",
+                "reference": "5b27e1ea06c97d02295408e12c29ae89a4f29102",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "^12.0|^13.0",
+                "php": ">=8.2"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Milirulepilot\\RulepilotServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Milirulepilot\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "A modern, modular package for business rule management.",
+            "support": {
+                "issues": "https://github.com/milirezai/milirulepilot/issues",
+                "source": "https://github.com/milirezai/milirulepilot/tree/v1.2.2"
+            },
+            "time": "2026-08-19T13:28:16+00:00"
         },
         {
             "name": "monolog/monolog",
