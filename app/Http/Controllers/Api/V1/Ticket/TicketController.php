@@ -85,6 +85,7 @@ class TicketController extends Controller
                 ]
             ]));
         }
+        $ticket->load('assignedTo');
 
         $messageInputs = [
             'content' => $request->input('content'),
