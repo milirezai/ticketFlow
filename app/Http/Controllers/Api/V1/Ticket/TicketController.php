@@ -12,6 +12,7 @@ use App\Filters\TicketFilter;
 use App\Http\Resources\Api\V1\Activity\ActivityLogResource;
 use App\Models\Ticket\TicketCategory;
 use App\Models\Ticket\TicketPriority;
+use App\Services\Escalation\TicketEscalation;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Routing\Controller;
 use App\Http\Requests\Api\V1\Ticket\TicketRequest;
@@ -28,7 +29,7 @@ class TicketController extends Controller
     use AuthorizesRequests;
     public function __construct()
     {
-        $this->authorizeResource(Ticket::class);
+//        $this->authorizeResource(Ticket::class);
     }
 
     /**
@@ -36,6 +37,7 @@ class TicketController extends Controller
      */
     public function index(Request $request, TicketFilter $filter)
     {
+        dd(app(TicketEscalation::class)->escalate());
         $tickets = Ticket::query();
 
         $filter->search($tickets, $request->only(['title', 'status', 'priority', 'owner', 'category', 'dateFrom', 'dateTo', 'assignedTo']));

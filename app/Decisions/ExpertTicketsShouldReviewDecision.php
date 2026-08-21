@@ -4,19 +4,18 @@ namespace App\Decisions;
 
 use Milirulepilot\Decision\Decision;
 
-class TicketEscalatedDecision extends Decision
+class ExpertTicketsShouldReviewDecision extends Decision
 {
 
     public function name(): string
     {
-        return 'ticketEscalated';
+        return 'expertTicketsShouldReviewDecision';
     }
 
     public function conditions(): array
     {
        return [
-           $this->condition->field('ticketStatus')->equal('open')->stopOrFail()->make(),
-           $this->condition->field('last_escalation')->lessThan(now())->make()
+           $this->condition->field('ticketsShouldReview')->greaterThan(5)->make()
        ];
     }
 

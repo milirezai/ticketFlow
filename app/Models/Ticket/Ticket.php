@@ -18,8 +18,8 @@ class Ticket extends Model
 {
     use SoftDeletes,HasFactory;
     protected $fillable = ['subject', 'user_id','assigned_to','ticket_category_id',
-        'ticket_priority_id','ticket_status_id', 'created_at','updated_at'];
-    protected $casts = ['created_at' => 'datetime', 'updated_at' => 'datetime'];
+        'ticket_priority_id','ticket_status_id', 'created_at','updated_at','last_escalation'];
+    protected $casts = ['created_at' => 'datetime', 'updated_at' => 'datetime','last_escalation' => 'datetime'];
     protected static function newFactory()
     {
         return TicketFactory::new();
