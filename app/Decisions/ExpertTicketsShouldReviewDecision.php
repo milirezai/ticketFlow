@@ -15,7 +15,7 @@ class ExpertTicketsShouldReviewDecision extends Decision
     public function conditions(): array
     {
        return [
-           $this->condition->field('ticketsShouldReview')->greaterThan(5)->make()
+           $this->condition->field('ticketsShouldReview')->lessThan(5)->make()
        ];
     }
 

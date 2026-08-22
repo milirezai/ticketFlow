@@ -24,6 +24,7 @@ use App\Models\Ticket\TicketMessage;
 use App\Models\Ticket\TicketStatus;
 use App\Models\User\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class TicketController extends Controller
@@ -31,7 +32,7 @@ class TicketController extends Controller
     use AuthorizesRequests;
     public function __construct()
     {
-//        $this->authorizeResource(Ticket::class);
+        $this->authorizeResource(Ticket::class);
     }
 
     /**
@@ -39,7 +40,6 @@ class TicketController extends Controller
      */
     public function index(Request $request, TicketFilter $filter)
     {
-        dd(app(TicketEscalation::class)->escalate());
         $tickets = Ticket::query();
 
         $filter->search($tickets, $request->only(['title', 'status', 'priority', 'owner', 'category', 'dateFrom', 'dateTo', 'assignedTo']));
