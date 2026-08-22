@@ -10,7 +10,8 @@
         "darkaonline/l5-swagger": "^9.0",
         "laravel/framework": "^12.0",
         "laravel/sanctum": "^4.0",
-        "laravel/tinker": "^2.10.1"
+        "laravel/tinker": "^2.10.1",
+        "milirezai/milirulepilot": "^1.2.4"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

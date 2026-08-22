@@ -13,7 +13,7 @@ use App\Filters\TicketFilter;
 use App\Http\Resources\Api\V1\Activity\ActivityLogResource;
 use App\Models\Ticket\TicketCategory;
 use App\Models\Ticket\TicketPriority;
-use App\Services\ResponseTime\ResponseTimer;
+use App\Services\Escalation\TicketEscalation;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Routing\Controller;
 use App\Http\Requests\Api\V1\Ticket\TicketRequest;
@@ -24,15 +24,15 @@ use App\Models\Ticket\TicketMessage;
 use App\Models\Ticket\TicketStatus;
 use App\Models\User\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class TicketController extends Controller
 {
     use AuthorizesRequests;
-    public function __construct(ResponseTimer $responseTimer)
+    public function __construct()
     {
         $this->authorizeResource(Ticket::class);
-        $responseTimer->evaluateTime();
     }
 
     /**
