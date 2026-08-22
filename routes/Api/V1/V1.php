@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\V1\Auth\RegisterController;
 use App\Http\Controllers\Api\V1\Auth\LoginController;
 use App\Http\Controllers\Api\V1\Auth\LogoutController;
 use App\Http\Controllers\Api\V1\Auth\PasswordController;
+use App\Http\Controllers\Api\V1\Dashboard\DashboardController;
 use App\Http\Controllers\Api\V1\Ticket\ExpertController;
 use App\Http\Controllers\Api\V1\Ticket\TicketCategoryController;
 use App\Http\Controllers\Api\V1\Ticket\TicketController;
@@ -66,4 +67,5 @@ Route::middleware(['throttle'])->group(function () {
     });
     Route::apiResource('tickets.files', TicketFileController::class)->scoped()->only(['index', 'show', 'store', 'destroy']);
     Route::get('tickets/{ticket}/files/{file}/download', [TicketFileController::class, 'download'])->name('tickets.files.download')->scopeBindings();
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
 });
