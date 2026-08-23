@@ -24,14 +24,14 @@ Route::get('/', [V1Controller::class, 'index']);
 
 // auth
 
-Route::middleware('throttle')->prefix('auth')->group(function () {
+Route::middleware('throttle:100,1')->prefix('auth')->group(function () {
 
     Route::post('/', [RegisterController::class, 'index'])->name('register');
     Route::post('/login', [LoginController::class, 'index'])->name('login');
     Route::post('/logout', [LogoutController::class, 'index'])
         ->middleware('auth:sanctum')->name('logout');
 
-    Route::prefix('password')->middleware('throttle')->controller(PasswordController::class)->group(function () {
+    Route::prefix('password')->controller(PasswordController::class)->group(function () {
 
         Route::post('change', 'changePassword')->middleware('auth:sanctum')
             ->name('password.change');
@@ -41,7 +41,7 @@ Route::middleware('throttle')->prefix('auth')->group(function () {
 });
 
 // access
-Route::middleware('auth:sanctum')->prefix('access')->name('access.')->group(function () {
+Route::middleware(['auth:sanctum','throttle:20,1'])->prefix('access')->name('access.')->group(function () {
     Route::apiResource('roles', RoleController::class);
     Route::post('roles/{role}/permissions/sync', [RoleController::class, 'syncPermissions'])->name('roles.syncPermission');
     Route::apiResource('permissions', PermissionController::class);
@@ -51,7 +51,7 @@ Route::middleware('auth:sanctum')->prefix('access')->name('access.')->group(func
 
 
 // ticket
-Route::middleware(['throttle'])->group(function () {
+Route::middleware(['auth:sanctum','throttle:500,1'])->group(function () {
     Route::apiResource('tickets', TicketController::class);
     Route::get('tickets/{ticket}/activities',[TicketController::class,'activities']);
     Route::apiResource('tickets.messages', TicketMessageController::class)->scoped();

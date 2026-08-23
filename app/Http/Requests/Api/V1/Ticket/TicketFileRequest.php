@@ -25,7 +25,7 @@ class TicketFileRequest extends FormRequest
     {
         return [
             'files' => ['required', 'array'],
-            'files.*' => ['file', File::types(['pdf', 'jpg', 'jpeg', 'png', 'zip'])->max('5mb')]
+            'files.*' => ['file', File::types(['pdf', 'jpg', 'jpeg', 'png', 'zip'])->max('5000kb')]
         ];
     }
 }
