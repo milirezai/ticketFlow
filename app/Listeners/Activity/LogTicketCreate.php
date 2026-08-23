@@ -7,8 +7,11 @@ use App\Services\Activity\Activity;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
-class LogTicketCreate
+class LogTicketCreate implements ShouldQueue
 {
+    use InteractsWithQueue;
+
+    public $delay = 60;
     /**
      * Create the event listener.
      */

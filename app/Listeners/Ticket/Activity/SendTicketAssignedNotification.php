@@ -11,6 +11,8 @@ use Illuminate\Queue\InteractsWithQueue;
 class SendTicketAssignedNotification implements ShouldQueue
 {
     use InteractsWithQueue;
+
+    public $delay = 60;
     /**
      * Create the event listener.
      */
