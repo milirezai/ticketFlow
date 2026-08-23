@@ -12,6 +12,8 @@ class TicketMessageCreatedNotification extends Notification implements ShouldQue
 {
     use Queueable;
 
+    public $delay = 60;
+
     /**
      * Create a new notification instance.
      */

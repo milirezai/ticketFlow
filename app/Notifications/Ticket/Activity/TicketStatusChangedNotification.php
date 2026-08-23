@@ -12,6 +12,8 @@ class TicketStatusChangedNotification extends Notification implements ShouldQueu
 {
     use Queueable;
 
+    public $delay = 60;
+
     /**
      * Create a new notification instance.
      */

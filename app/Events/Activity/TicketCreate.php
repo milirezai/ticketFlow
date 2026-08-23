@@ -5,13 +5,16 @@ namespace App\Events\Activity;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class TicketCreate
+class TicketCreate implements ShouldQueue
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
+
+    public $delay = 60;
 
     /**
      * Create a new event instance.

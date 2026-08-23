@@ -7,12 +7,15 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class TicketMessageAdded
+class TicketMessageAdded implements ShouldQueue
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
+
+    public $delay = 60;
 
     /**
      * Create a new event instance.

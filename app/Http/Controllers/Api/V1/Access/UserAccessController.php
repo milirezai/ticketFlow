@@ -17,7 +17,6 @@ class UserAccessController extends Controller
 
     public function assignRoles(User $user, UserAccessRequest $request): UserResource
     {
-
         $this->access->assignRolesToUser($user, $request->role_ids ?? []);
         return UserResource::make($user->load('roles'));
     }
