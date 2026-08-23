@@ -7,9 +7,11 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class SendOtpNotification extends Notification
+class SendOtpNotification extends Notification implements ShouldQueue
 {
     use Queueable;
+
+    public $delay = 60;
 
     /**
      * Create a new notification instance.

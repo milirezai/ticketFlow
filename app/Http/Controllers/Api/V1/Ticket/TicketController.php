@@ -24,7 +24,6 @@ use App\Models\Ticket\TicketMessage;
 use App\Models\Ticket\TicketStatus;
 use App\Models\User\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class TicketController extends Controller
