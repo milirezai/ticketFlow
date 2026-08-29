@@ -1,59 +1,697 @@
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
 
-## About Laravel
+# 🎫 TicketFlow
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+**TicketFlow** is an open-source, modular support ticket management system built with **Laravel 12** and designed around **Clean Architecture, separation of responsibilities, RESTful APIs, and real-world backend engineering practices**.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+The project goes beyond a basic CRUD ticket system by implementing authentication, role-based access control, ticket assignment, conversations, notifications, filtering, activity logging, SLA-based escalation, automated background jobs, and a rule-driven decision layer.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+The main goal of TicketFlow is not only to provide a working ticketing system, but also to demonstrate how a maintainable and scalable backend can be designed using Laravel.
 
-## Learning Laravel
+[![PHP](https://img.shields.io/badge/PHP-8.2%2B-777BB4?logo=php\&logoColor=white)](https://www.php.net/)
+[![Laravel](https://img.shields.io/badge/Laravel-12.x-FF2D20?logo=laravel\&logoColor=white)](https://laravel.com/)
+[![Sanctum](https://img.shields.io/badge/Auth-Laravel%20Sanctum-FF2D20?logo=laravel\&logoColor=white)](https://laravel.com/docs/sanctum)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+---
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## ✨ Overview
 
-## Laravel Sponsors
+TicketFlow is designed to model a real-world customer support environment where users can create tickets, support agents can handle conversations, tickets can be assigned and reassigned, and operational rules can automatically intervene when response deadlines are exceeded.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Instead of putting all business logic inside controllers, the application separates responsibilities into dedicated layers and components.
 
-### Premium Partners
+This makes the codebase easier to:
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+* understand
+* test
+* extend
+* refactor
+* maintain
+* develop collaboratively
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## 🚀 Features
 
-## Code of Conduct
+### 🔐 Authentication & Authorization
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+* User registration and authentication
+* OTP-based verification flow
+* Token authentication using Laravel Sanctum
+* Role-based access control
+* Permission-based authorization
+* Ticket policies
+* Protected API endpoints
 
-## Security Vulnerabilities
+---
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 🎫 Ticket Management
 
-## License
+* Create tickets
+* View tickets
+* Update tickets
+* Delete tickets
+* Assign tickets to support agents
+* Reassign tickets
+* Close tickets
+* Manage ticket priorities
+* Manage ticket statuses
+* Associate tickets with user categories
+* Track ticket ownership
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Ticket status and priority are modeled independently instead of being hard-coded directly into the ticket entity.
+
+---
+
+### 💬 Conversations
+
+Tickets support conversation-based communication between users and support agents.
+
+The conversation layer allows the system to keep communication attached to the ticket lifecycle rather than treating a ticket as a single static record.
+
+---
+
+### 👤 User & Expert Management
+
+TicketFlow supports different user responsibilities through roles, permissions, and ticket assignment.
+
+Experts can be selected based on business rules such as:
+
+* matching ticket category
+* current workload
+* number of open tickets
+* assignment eligibility
+
+This allows ticket assignment to become a business decision instead of simply selecting a random user.
+
+---
+
+### 🔎 Ticket Filtering
+
+TicketFlow provides a dedicated filtering layer for querying tickets.
+
+Tickets can be filtered using criteria such as:
+
+* status
+* priority
+* subject
+* user category
+* assigned expert
+* date range
+
+Filters are separated from the core ticket logic so additional filtering rules can be introduced without turning controllers or services into large query classes.
+
+---
+
+### 🔔 Notifications
+
+The project includes a notification layer for handling application notifications.
+
+Notification logic is separated from the main ticket workflow so notification behavior can evolve independently from ticket business logic.
+
+---
+
+### 📋 Activity Logging
+
+Important system actions can be recorded through the activity layer.
+
+Examples include:
+
+* ticket assignment
+* ticket reassignment
+* important ticket state changes
+* automated escalation actions
+
+This provides an audit trail for operationally important events.
+
+---
+
+## ⏱️ SLA & Automatic Ticket Escalation
+
+One of the more important features of TicketFlow is its automated escalation mechanism.
+
+A ticket can be considered for escalation when:
+
+1. The ticket is still open.
+2. The allowed response time has been exceeded.
+3. The ticket meets the required priority/SLA conditions.
+
+When escalation is triggered, TicketFlow evaluates eligible experts.
+
+The assignment process considers factors such as:
+
+* ticket category
+* expert category
+* number of currently open tickets
+* assignment eligibility
+
+If eligible experts are available, the ticket can be reassigned and the action is recorded in the activity log.
+
+### Example flow
+
+```text
+Open Ticket
+     │
+     ▼
+Check SLA
+     │
+     ├── Within allowed time ──► Keep current assignment
+     │
+     ▼
+Response time exceeded
+     │
+     ▼
+Find eligible experts
+     │
+     ├── No eligible expert ──► Keep current assignment
+     │
+     ▼
+Select eligible expert
+     │
+     ▼
+Reassign ticket
+     │
+     ▼
+Create activity log
+```
+
+The escalation process is designed as a background operation rather than something that depends on a user manually opening a dashboard.
+
+---
+
+## 🧠 Rule-Driven Decision Layer
+
+TicketFlow integrates **MilliRulePilot** as a rule-based decision layer.
+
+This allows business decisions to be separated from the surrounding application workflow.
+
+Instead of embedding complex conditions directly inside controllers or large service methods, decision logic can be represented as independent rules and evaluated through the rule engine.
+
+This approach is useful for scenarios such as:
+
+* SLA decisions
+* ticket escalation
+* assignment rules
+* priority-based behavior
+* future business decision workflows
+
+The project currently uses:
+
+```text
+milirezai/milirulepilot
+```
+
+This separation allows the application to evolve its business rules without tightly coupling those rules to HTTP or database code.
+
+---
+
+## 🏗️ Architecture
+
+TicketFlow follows a modular, layered architecture inspired by **Clean Architecture** principles.
+
+The goal is to keep responsibilities separated and prevent business logic from becoming tightly coupled to controllers, HTTP requests, or framework-specific concerns.
+
+### High-level structure
+
+```text
+                ┌─────────────────────┐
+                │      HTTP / API     │
+                │ Controllers/Routes  │
+                └──────────┬──────────┘
+                           │
+                           ▼
+                ┌─────────────────────┐
+                │      Services       │
+                │ Application Logic   │
+                └──────────┬──────────┘
+                           │
+                           ▼
+                ┌─────────────────────┐
+                │ Decisions / Rules   │
+                │ Business Decisions  │
+                └──────────┬──────────┘
+                           │
+                           ▼
+                ┌─────────────────────┐
+                │ Models / Persistence│
+                │      Database       │
+                └─────────────────────┘
+```
+
+The application also contains dedicated areas for filters, jobs, notifications, policies, events, listeners, and providers.
+
+---
+
+## 📁 Project Structure
+
+```text
+app/
+├── Decisions/
+├── Events/
+│   └── Activity/
+├── Filters/
+├── Http/
+├── Jobs/
+├── Listeners/
+├── Models/
+├── Notifications/
+├── Policies/
+│   └── Ticket/
+├── Providers/
+├── Rules/
+└── Services/
+
+database/
+├── factories/
+├── migrations/
+└── seeders/
+
+routes/
+├── Api/
+│   └── V1/
+├── api.php
+├── console.php
+└── web.php
+
+tests/
+```
+
+The application structure intentionally separates responsibilities rather than grouping everything into a large controller/service/model layer.
+
+---
+
+## 🧩 Main Architectural Components
+
+### Controllers
+
+Controllers are responsible for handling HTTP concerns and coordinating application operations.
+
+They should not become the place where the application's entire business logic lives.
+
+---
+
+### Services
+
+Services encapsulate application-level operations that may involve multiple models, business rules, or workflows.
+
+Examples include ticket operations, assignment logic, and other reusable application workflows.
+
+---
+
+### Rules
+
+Rules contain reusable business conditions.
+
+This allows business logic to be expressed independently from HTTP and persistence concerns.
+
+---
+
+### Decisions
+
+The decision layer is used for higher-level business decisions where multiple rules may need to be evaluated together.
+
+This is especially useful for rule-driven workflows such as escalation and assignment.
+
+---
+
+### Filters
+
+Filtering logic is isolated from controllers so complex ticket queries remain maintainable.
+
+Instead of creating increasingly large controller methods, individual filters can be composed as needed.
+
+---
+
+### Policies
+
+Policies handle authorization decisions around protected resources such as tickets.
+
+This keeps authorization rules out of controllers and makes them easier to test and maintain.
+
+---
+
+### Jobs
+
+Background jobs are used for operations that should not depend on a user's HTTP request.
+
+The ticket escalation workflow is one example of a background operation.
+
+---
+
+### Events & Listeners
+
+Events and listeners provide a way to react to important system actions without tightly coupling the original operation to every side effect.
+
+---
+
+## 🗄️ Data Model
+
+The system separates several concepts into dedicated database entities instead of placing everything directly inside the ticket table.
+
+The project includes concepts such as:
+
+```text
+User
+ │
+ ├── Roles
+ │    └── Permissions
+ │
+ └── Tickets
+       │
+       ├── Status
+       ├── Priority
+       ├── Category
+       ├── Expert
+       ├── Conversations
+       └── Activity Logs
+```
+
+This separation allows ticket state and business configuration to evolve independently.
+
+---
+
+## 🔍 API
+
+TicketFlow exposes RESTful API endpoints organized under an API version structure.
+
+```text
+routes/
+└── Api/
+    └── V1/
+```
+
+The API layer is protected using Laravel Sanctum where authentication is required.
+
+API documentation is supported through **L5-Swagger / OpenAPI**.
+
+---
+
+## 📚 API Documentation
+
+The project uses:
+
+```text
+darkaonline/l5-swagger
+```
+
+for API documentation generation.
+
+After installing and configuring the project, Swagger documentation can be generated through the Laravel application.
+
+---
+
+## ⚙️ Requirements
+
+Before running TicketFlow, make sure the environment has:
+
+* PHP 8.2+
+* Composer
+* Laravel 12
+* MySQL or another supported relational database
+* Node.js
+* npm
+* Git
+
+---
+
+## 📦 Installation
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/milirezai/ticketFlow.git
+
+cd ticketFlow
+```
+
+### 2. Install PHP dependencies
+
+```bash
+composer install
+```
+
+### 3. Create the environment file
+
+```bash
+cp .env.example .env
+```
+
+### 4. Generate the application key
+
+```bash
+php artisan key:generate
+```
+
+### 5. Configure the database
+
+Update your `.env` file:
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=ticketflow
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+### 6. Run migrations
+
+```bash
+php artisan migrate
+```
+
+### 7. Install frontend dependencies
+
+```bash
+npm install
+```
+
+### 8. Build frontend assets
+
+```bash
+npm run build
+```
+
+### 9. Start the application
+
+```bash
+php artisan serve
+```
+
+---
+
+## 🧪 Testing
+
+TicketFlow uses PHPUnit through Laravel's testing infrastructure.
+
+Run the test suite with:
+
+```bash
+php artisan test
+```
+
+Or:
+
+```bash
+composer test
+```
+
+Tests are located inside:
+
+```text
+tests/
+```
+
+Testing is an important part of the project because business rules such as ticket assignment, authorization, filtering, and escalation can become complicated quickly.
+
+---
+
+## 🛠️ Development
+
+For local development, the project provides a Composer development script that can run the application server, queue worker, logs, and Vite development server together.
+
+```bash
+composer run dev
+```
+
+This makes the development workflow easier by starting the required processes from one command.
+
+---
+
+## 🔄 Background Processing
+
+TicketFlow uses Laravel's queue and job infrastructure for background processing.
+
+The application can run a queue worker with:
+
+```bash
+php artisan queue:listen
+```
+
+Background processing is especially useful for automated workflows such as escalation and other operations that should not block an HTTP request.
+
+---
+
+## ⏰ Scheduled Escalation
+
+Ticket escalation is designed to run automatically through Laravel's scheduler.
+
+The scheduler periodically evaluates tickets and identifies those that require escalation.
+
+A typical production setup can run Laravel's scheduler every minute:
+
+```bash
+php artisan schedule:work
+```
+
+The escalation job itself can then control how frequently escalation checks are performed.
+
+---
+
+## 🔒 Authorization Model
+
+TicketFlow separates authentication from authorization.
+
+### Authentication
+
+Laravel Sanctum handles API token authentication.
+
+### Authorization
+
+Roles, permissions, and policies are used to determine what an authenticated user is allowed to do.
+
+Conceptually:
+
+```text
+Authentication
+      │
+      ▼
+Authenticated User
+      │
+      ▼
+Role / Permission
+      │
+      ▼
+Policy
+      │
+      ▼
+Authorized Action
+```
+
+This makes access control explicit rather than relying on scattered checks throughout controllers.
+
+---
+
+## 🧱 Design Principles
+
+The project follows several backend engineering principles:
+
+### Single Responsibility
+
+Each component should have a focused responsibility.
+
+### Separation of Concerns
+
+HTTP, business logic, authorization, persistence, filtering, notifications, and background processing are kept separate.
+
+### Dependency Injection
+
+Dependencies are injected instead of being manually instantiated inside business logic.
+
+### Reusability
+
+Business rules and application services are designed to be reusable.
+
+### Testability
+
+Logic is structured so important behavior can be tested independently.
+
+### Maintainability
+
+The architecture is designed to make future changes less expensive.
+
+---
+
+## 🧑‍💻 Technology Stack
+
+| Technology      | Purpose                    |
+| --------------- | -------------------------- |
+| PHP 8.2+        | Backend language           |
+| Laravel 12      | Application framework      |
+| Laravel Sanctum | API authentication         |
+| MySQL           | Relational database        |
+| PHPUnit         | Automated testing          |
+| L5-Swagger      | API documentation          |
+| MilliRulePilot  | Rule-based decision engine |
+| Composer        | PHP dependency management  |
+| Vite / npm      | Frontend asset tooling     |
+| Git             | Version control            |
+
+The repository currently declares Laravel 12, PHP 8.2+, Sanctum, L5-Swagger, PHPUnit, and `milirezai/milirulepilot` as project dependencies.
+
+---
+
+## 🎯 Why TicketFlow?
+
+TicketFlow was built as more than a CRUD exercise.
+
+The project focuses on solving backend problems that appear in real systems:
+
+* How should business logic be separated from controllers?
+* How should authorization scale?
+* How should complex ticket queries remain maintainable?
+* How can automated workflows operate without HTTP requests?
+* How should SLA violations be detected?
+* How can ticket assignment be driven by business rules?
+* How can important system actions be audited?
+* How can business decisions be separated from infrastructure?
+
+The architecture is intentionally designed around these questions.
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome.
+
+If you want to improve TicketFlow:
+
+1. Fork the repository.
+2. Create a feature branch.
+3. Implement your changes.
+4. Add or update tests.
+5. Commit your changes.
+6. Open a pull request.
+
+Example:
+
+```bash
+git checkout -b feature/my-feature
+
+git add .
+
+git commit -m "Add my feature"
+
+git push origin feature/my-feature
+```
+
+---
+
+## 📄 License
+
+TicketFlow is open-source software licensed under the **MIT License**.
+
+See the [LICENSE](LICENSE) file for more information.
+
+---
+
+## ⭐ Support
+
+If you find the project useful, consider giving it a ⭐ on GitHub.
+
+Every star tells the algorithm that this repository is not merely another lonely folder containing `UserController.php`.
+
+---
