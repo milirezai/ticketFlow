@@ -12,14 +12,13 @@ class TicketStatusChangedNotification extends Notification implements ShouldQueu
 {
     use Queueable;
 
-    public $delay = 60;
 
     /**
      * Create a new notification instance.
      */
     public function __construct(public Ticket $ticket, public string $description)
     {
-        //
+        $this->delay(60);
     }
 
     /**

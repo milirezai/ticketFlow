@@ -10,14 +10,13 @@ class TicketEscalationJob implements ShouldQueue
 {
     use Queueable;
 
-    public $delay = 60;
 
     /**
      * Create a new job instance.
      */
     public function __construct()
     {
-
+        $this->delay(60);
     }
 
     /**

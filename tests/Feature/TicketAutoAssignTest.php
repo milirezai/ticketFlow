@@ -9,7 +9,6 @@ use App\Models\Ticket\TicketCategory;
 use App\Models\Ticket\TicketPriority;
 use App\Models\Ticket\TicketStatus;
 use App\Models\User\User;
-use App\Services\ResponseTime\ResponseTimer;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Event;
@@ -27,9 +26,6 @@ class TicketAutoAssignTest extends TestCase
         parent::setUp();
         $this->expertRole = Role::create(['name' => 'expert', 'description' => 'Expert', 'status' => 1]);
         Role::create(['name' => 'regular-user', 'description' => 'Regular User', 'status' => 1]);
-        $this->mock(ResponseTimer::class, function ($mock) {
-            $mock->shouldReceive('evaluateTime')->once();
-        });
     }
 
     private function makeExpert(): User
