@@ -11,14 +11,12 @@ class SendOtpNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    public $delay = 60;
-
     /**
      * Create a new notification instance.
      */
     public function __construct(public string $otpCode)
     {
-        //
+        $this->delay(60);
     }
 
     /**
