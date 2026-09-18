@@ -53,7 +53,7 @@ Route::middleware(['auth:sanctum','throttle:20,1'])->prefix('access')->name('acc
 // ticket
 Route::middleware(['auth:sanctum','throttle:500,1'])->group(function () {
     Route::apiResource('tickets', TicketController::class);
-    Route::get('tickets/{ticket}/activities',[TicketController::class,'activities']);
+    Route::get('tickets/{ticket}/activities',[TicketController::class,'activities'])->name('tickets.activities');
     Route::apiResource('tickets.messages', TicketMessageController::class)->scoped();
     Route::apiResource('ticket-categories', TicketCategoryController::class);
     Route::apiResource('ticket-priorities', TicketPriorityController::class);

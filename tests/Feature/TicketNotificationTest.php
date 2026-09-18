@@ -2,8 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Models\Access\Permission;
-use App\Models\Access\Role;
 use App\Models\Ticket\Ticket;
 use App\Models\Ticket\TicketCategory;
 use App\Models\Ticket\TicketPriority;
@@ -14,40 +12,22 @@ use App\Notifications\Ticket\Activity\TicketCreatedNotification;
 use App\Notifications\Ticket\Activity\TicketMessageCreatedNotification;
 use App\Notifications\Ticket\Activity\TicketStatusChangedNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Notification;
 use Laravel\Sanctum\Sanctum;
+use Tests\Concerns\CreatesUsers;
 use Tests\TestCase;
 
 class TicketNotificationTest extends TestCase
 {
+    use CreatesUsers;
     use RefreshDatabase;
 
     protected function setUp(): void
     {
         parent::setUp();
-        Permission::create(['name' => 'expert.manage', 'description' => 'expert.manage', 'status' => 1]);
-        Gate::define('expert.manage', fn(User $user) => $user->hasPermissionTo('expert.manage'));
         foreach (['conversation.viewAny', 'conversation.view', 'conversation.create', 'conversation.update', 'conversation.delete'] as $name) {
-            Permission::create(['name' => $name, 'description' => $name, 'status' => 1]);
-            Gate::define($name, fn(User $user) => $user->hasPermissionTo($name));
+            $this->definePermissionGate($name);
         }
-    }
-
-    private function userWithRole(string $role): User
-    {
-        $user = User::factory()->create();
-        $user->roles()->attach(Role::firstOrCreate(['name' => $role], ['description' => ucfirst($role), 'status' => 1]));
-        return $user;
-    }
-
-    private function expert(TicketCategory $category): User
-    {
-        $user = User::factory()->create();
-        $user->roles()->attach(Role::firstOrCreate(['name' => 'expert'], ['description' => 'Expert', 'status' => 1]));
-        $user->expertCategories()->attach($category->id);
-        return $user;
     }
 
     private function makeTicket(User $owner, ?User $expert = null, ?TicketCategory $category = null): Ticket
@@ -68,12 +48,15 @@ class TicketNotificationTest extends TestCase
         ]);
     }
 
-    public function test_admins_receive_notification_when_ticket_created_without_expert(): void
+    private function expertCanMessage(TicketCategory $category): User
     {
-        Notification::fake();
-        $admin = $this->userWithRole('admin');
-        $category = TicketCategory::factory()->create();
-        $owner = User::factory()->create();
+        $expert = $this->makeExpert($category);
+        $expert->permissions()->attach($this->definePermissionGate('conversation.create'));
+        return $expert;
+    }
+
+    private function storeTicketPayload(TicketCategory $category, User $owner): void
+    {
         Sanctum::actingAs($owner);
         $this->postJson(route('tickets.store'), [
             'subject' => 'Help me with login',
@@ -82,6 +65,41 @@ class TicketNotificationTest extends TestCase
             'ticket_priority_id' => TicketPriority::factory()->create()->id,
             'ticket_status_id' => TicketStatus::factory()->create()->id,
         ])->assertStatus(201);
+    }
+
+    public function test_admins_receive_notification_when_ticket_created_without_expert(): void
+    {
+        Notification::fake();
+        $admin = $this->userWithRole('admin');
+        $owner = User::factory()->create();
+        $this->storeTicketPayload(TicketCategory::factory()->create(), $owner);
+        Notification::assertSentTo($admin, TicketCreatedNotification::class);
+    }
+
+    public function test_all_admins_and_support_notified_when_ticket_created_without_expert(): void
+    {
+        Notification::fake();
+        $adminA = $this->userWithRole('admin');
+        $adminB = $this->userWithRole('admin');
+        $support = $this->userWithRole('support-specialist');
+        $owner = User::factory()->create();
+        $this->storeTicketPayload(TicketCategory::factory()->create(), $owner);
+        Notification::assertSentTo($adminA, TicketCreatedNotification::class);
+        Notification::assertSentTo($adminB, TicketCreatedNotification::class);
+        Notification::assertSentTo($support, TicketCreatedNotification::class);
+        Notification::assertNotSentTo($owner, TicketCreatedNotification::class);
+    }
+
+    public function test_expert_notified_of_automatic_assignment_when_ticket_created(): void
+    {
+        Notification::fake();
+        $category = TicketCategory::factory()->create();
+        $expert = $this->makeExpert($category);
+        $admin = $this->userWithRole('admin');
+        $owner = User::factory()->create();
+        $this->storeTicketPayload($category, $owner);
+        Notification::assertSentTo($expert, TicketAssignedNotification::class);
+        Notification::assertNotSentTo($expert, TicketCreatedNotification::class);
         Notification::assertSentTo($admin, TicketCreatedNotification::class);
     }
 
@@ -89,12 +107,11 @@ class TicketNotificationTest extends TestCase
     {
         Notification::fake();
         $category = TicketCategory::factory()->create();
-        $expert = $this->expert($category);
-        $expert->permissions()->attach(Permission::where('name', 'conversation.create')->first());
+        $expert = $this->expertCanMessage($category);
         $owner = User::factory()->create();
         $ticket = $this->makeTicket($owner, $expert);
         Sanctum::actingAs($expert);
-        $this->postJson(route('tickets.messages.store', [$ticket->id]), ['content' => 'Reply from expert'])
+        $this->postJson(route('tickets.messages.store', $ticket->id), ['content' => 'Reply from expert'])
             ->assertStatus(201);
         Notification::assertSentTo($owner, TicketMessageCreatedNotification::class);
     }
@@ -103,27 +120,59 @@ class TicketNotificationTest extends TestCase
     {
         Notification::fake();
         $category = TicketCategory::factory()->create();
-        $expert = $this->expert($category);
+        $expert = $this->expertCanMessage($category);
         $owner = User::factory()->create();
         $ticket = $this->makeTicket($owner, $expert);
         Sanctum::actingAs($owner);
-        $this->postJson(route('tickets.messages.store', [$ticket->id]), ['content' => 'Owner reply here'])
+        $this->postJson(route('tickets.messages.store', $ticket->id), ['content' => 'Owner reply here'])
             ->assertStatus(201);
         Notification::assertSentTo($expert, TicketMessageCreatedNotification::class);
+    }
+
+    public function test_only_ticket_participants_notified_of_messages(): void
+    {
+        Notification::fake();
+        $category = TicketCategory::factory()->create();
+        $expert = $this->expertCanMessage($category);
+        $owner = User::factory()->create();
+        $staff = $this->userWithRole('support-specialist');
+        $ticket = $this->makeTicket($owner, $expert);
+        Sanctum::actingAs($owner);
+        $this->postJson(route('tickets.messages.store', $ticket->id), ['content' => 'Owner reply here'])
+            ->assertStatus(201);
+        Notification::assertSentTo($expert, TicketMessageCreatedNotification::class);
+        Notification::assertNotSentTo($owner, TicketMessageCreatedNotification::class);
+        Notification::assertNotSentTo($staff, TicketMessageCreatedNotification::class);
     }
 
     public function test_new_expert_notified_on_assignment(): void
     {
         Notification::fake();
         $category = TicketCategory::factory()->create();
-        $expert = $this->expert($category);
+        $expert = $this->makeExpert($category);
         $owner = User::factory()->create();
         $ticket = $this->makeTicket($owner, category: $category);
         $support = $this->userWithRole('support-specialist');
         Sanctum::actingAs($support);
-        $this->postJson(route('experts.assign', [$expert->id]), ['ticket_id' => $ticket->id])
+        $this->postJson(route('experts.assign', $expert->id), ['ticket_id' => $ticket->id])
             ->assertOk();
         Notification::assertSentTo($expert, TicketAssignedNotification::class);
+    }
+
+    public function test_old_expert_not_notified_after_reassignment(): void
+    {
+        Notification::fake();
+        $category = TicketCategory::factory()->create();
+        $oldExpert = $this->makeExpert($category);
+        $newExpert = $this->makeExpert($category);
+        $owner = User::factory()->create();
+        $ticket = $this->makeTicket($owner, $oldExpert, $category);
+        $support = $this->userWithRole('support-specialist');
+        Sanctum::actingAs($support);
+        $this->postJson(route('experts.assign', $newExpert->id), ['ticket_id' => $ticket->id])
+            ->assertOk();
+        Notification::assertSentTo($newExpert, TicketAssignedNotification::class);
+        Notification::assertNotSentTo($oldExpert, TicketAssignedNotification::class);
     }
 
     public function test_owner_notified_on_status_change(): void
@@ -133,21 +182,35 @@ class TicketNotificationTest extends TestCase
         $ticket = $this->makeTicket($owner);
         $newStatus = TicketStatus::factory()->create();
         Sanctum::actingAs($owner);
-        $this->putJson(route('tickets.update', [$ticket->id]), [
-            'ticket_status_id' => $newStatus->id,
-        ])->assertOk();
+        $this->putJson(route('tickets.update', $ticket->id), ['ticket_status_id' => $newStatus->id])
+            ->assertOk();
         Notification::assertSentTo($owner, TicketStatusChangedNotification::class);
+    }
+
+    public function test_status_change_notifies_owner_but_not_assigned_expert(): void
+    {
+        Notification::fake();
+        $category = TicketCategory::factory()->create();
+        $expert = $this->makeExpert($category);
+        $owner = User::factory()->create();
+        $ticket = $this->makeTicket($owner, $expert);
+        $newStatus = TicketStatus::factory()->create();
+        Sanctum::actingAs($owner);
+        $this->putJson(route('tickets.update', $ticket->id), ['ticket_status_id' => $newStatus->id])
+            ->assertOk();
+        Notification::assertSentTo($owner, TicketStatusChangedNotification::class);
+        Notification::assertNotSentTo($expert, TicketStatusChangedNotification::class);
     }
 
     public function test_sender_does_not_receive_own_message_notification(): void
     {
         Notification::fake();
         $category = TicketCategory::factory()->create();
-        $expert = $this->expert($category);
+        $expert = $this->expertCanMessage($category);
         $owner = User::factory()->create();
         $ticket = $this->makeTicket($owner, $expert);
         Sanctum::actingAs($owner);
-        $this->postJson(route('tickets.messages.store', [$ticket->id]), ['content' => 'Owner sends message'])
+        $this->postJson(route('tickets.messages.store', $ticket->id), ['content' => 'Owner sends message'])
             ->assertStatus(201);
         Notification::assertNotSentTo($owner, TicketMessageCreatedNotification::class);
         Notification::assertSentTo($expert, TicketMessageCreatedNotification::class);
